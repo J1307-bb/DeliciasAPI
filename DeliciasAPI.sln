@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34525.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeliciasAPI", "DeliciasAPI\DeliciasAPI.csproj", "{1A0CD1AF-99B3-4665-8F7A-ED6D4A7CC597}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{A0DEB89B-67DD-4528-9CA5-085AACE3AB12}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1A0CD1AF-99B3-4665-8F7A-ED6D4A7CC597}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A0CD1AF-99B3-4665-8F7A-ED6D4A7CC597}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A0CD1AF-99B3-4665-8F7A-ED6D4A7CC597}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A0CD1AF-99B3-4665-8F7A-ED6D4A7CC597}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0DEB89B-67DD-4528-9CA5-085AACE3AB12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0DEB89B-67DD-4528-9CA5-085AACE3AB12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0DEB89B-67DD-4528-9CA5-085AACE3AB12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0DEB89B-67DD-4528-9CA5-085AACE3AB12}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {54A7A88B-0A92-4CD4-99AB-A34FB90457F7}
+	EndGlobalSection
+EndGlobal
