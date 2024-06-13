@@ -1,6 +1,7 @@
 using DeliciasAPI.Context;
 using Microsoft.EntityFrameworkCore;
 using DeliciasAPI.Services;
+using DeliciasAPI.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,15 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//Inyecciones de dependencias
+builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IMealService, MealService>();
+builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddTransient<IOrderService, OrderService>();
+builder.Services.AddTransient<IQuotesService, QuotesService>();
+builder.Services.AddTransient<IContactService, ContactService>();
+builder.Services.AddTransient<ILoginService, LoginService>();
 
 //Agregar el corsPolicy
 builder.Services.AddCors(policyBulder =>
