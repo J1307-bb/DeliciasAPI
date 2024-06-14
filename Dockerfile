@@ -4,14 +4,14 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["DeliciasAPI.csproj.user", "."]
-RUN dotnet restore "./DeliciasAPI.csproj.user"
+COPY ["DeliciasAPI.csproj", "."]
+RUN dotnet restore "./DeliciasAPI.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "DeliciasAPI.csproj.user" -c Release -o /app/build
+RUN dotnet build "DeliciasAPI.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "DeliciasAPI.csproj.user" -c Release -o /app/publish
+RUN dotnet publish "DeliciasAPI.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
