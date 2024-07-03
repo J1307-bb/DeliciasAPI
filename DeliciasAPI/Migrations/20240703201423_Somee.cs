@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DeliciasAPI.Migrations
 {
-    public partial class aws : Migration
+    public partial class Somee : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

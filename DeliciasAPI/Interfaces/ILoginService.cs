@@ -5,7 +5,7 @@ namespace DeliciasAPI.Interfaces
 {
     public interface ILoginService
     {
-        public Task<Response<User>> Authenticate(LoginResponse request);
+        public Task<Response<User>> Authenticate(LoginResponse request, string secretKey);
 
     }
 }

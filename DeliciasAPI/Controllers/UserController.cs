@@ -1,11 +1,13 @@
 ﻿using DeliciasAPI.Interfaces;
 using Domain.DTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DeliciasAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class UserController : ControllerBase
     {
         public readonly IUserService _userService;

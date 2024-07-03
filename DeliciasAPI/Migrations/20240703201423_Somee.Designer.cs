@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeliciasAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240607055905_aws")]
-    partial class aws
+    [Migration("20240703201423_Somee")]
+    partial class Somee
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
