@@ -29,14 +29,14 @@ namespace DeliciasAPI.Controllers
 
         }
 
-        [HttpPut("id")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Actualizar([FromBody] CategoryResponse request, int id)
         {
             var result = await _categoryService.ActualizarCategory(id, request);
             return Ok(result);
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Eliminar(int id)
         {
             var result = await _categoryService.EliminarCategory(id);

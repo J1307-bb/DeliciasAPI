@@ -21,7 +21,7 @@ namespace DeliciasAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetOne(int id)
         {
             var result = await _roleService.GetRole(id);
@@ -36,14 +36,14 @@ namespace DeliciasAPI.Controllers
 
         }
 
-        [HttpPut("id")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromBody] RoleResponse request, int id)
         {
             var result = await _roleService.UpdateRole(id, request);
             return Ok(result);
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _roleService.DeleteRole(id);

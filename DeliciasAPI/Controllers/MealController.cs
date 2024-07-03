@@ -21,7 +21,7 @@ namespace DeliciasAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> ObtenerMeal(int id)
         {
             var result = await _mealService.ObtenerMeal(id);
@@ -36,14 +36,14 @@ namespace DeliciasAPI.Controllers
 
         }
 
-        [HttpPut("id")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Actualizar([FromBody] MealResponse request, int id)
         {
             var result = await _mealService.ActualizarMeal(id, request);
             return Ok(result);
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Eliminar(int id)
         {
             var result = await _mealService.EliminarMeal(id);
