@@ -20,7 +20,7 @@ namespace DeliciasAPI.Services
         {
             try
             {
-                List<Order> response = await _context.Orders.Include(x => x.Meal).Include(x=> x.User).ToListAsync();
+                List<Order> response = await _context.Orders.Include(x=> x.User).ToListAsync();
                 return new Response<List<Order>>(response);
             }
             catch (Exception ex)
@@ -50,11 +50,17 @@ namespace DeliciasAPI.Services
             {
                 Order order = new Order()
                 {
-                    NumMeals = request.NumMeals,
                     IdUser = request.IdUser,
-                    IdMeal = request.IdMeal,
+                    Status = request.Status,
                     Date = request.Date,
                     Hour = request.Hour,
+                    Place = request.Place,
+                    Price = request.Price,
+                    OrderItems = request.OrderItems.Select(x => new OrderItem()
+                    {
+                        IdMeal = x.IdMeal,
+                        Quantity = x.Quantity
+                    }).ToList()
                 };
 
                 _context.Orders.Add(order);
@@ -78,21 +84,33 @@ namespace DeliciasAPI.Services
 
                 if (ord != null)
                 {
-                    ord.NumMeals = order.NumMeals;
                     ord.IdUser = order.IdUser;
                     ord.Date = order.Date;
                     ord.Hour = order.Hour;
-                    ord.IdMeal = order.IdMeal;
+                    ord.Status = order.Status;
+                    ord.Place = order.Place;
+                    ord.Price = order.Price;
+                    ord.OrderItems = order.OrderItems.Select(x => new OrderItem()
+                    {
+                        IdMeal = x.IdMeal,
+                        Quantity = x.Quantity
+                    }).ToList();
                     _context.SaveChanges();
                 }
 
                 Order newOrder = new Order()
                 {
-                    NumMeals = order.NumMeals,
                     IdUser = order.IdUser,
-                    IdMeal = order.IdMeal,
+                    Status = order.Status,
                     Date = order.Date,
                     Hour = order.Hour,
+                    Place = order.Place,
+                    Price = order.Price,
+                    OrderItems = order.OrderItems.Select(x => new OrderItem()
+                    {
+                        IdMeal = x.IdMeal,
+                        Quantity = x.Quantity
+                    }).ToList()
                 };
 
                 _context.Orders.Update(ord);

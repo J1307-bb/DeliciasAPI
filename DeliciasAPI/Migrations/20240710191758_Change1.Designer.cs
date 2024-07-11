@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeliciasAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240703201423_Somee")]
-    partial class Somee
+    [Migration("20240710191758_Change1")]
+    partial class Change1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -161,22 +161,50 @@ namespace DeliciasAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("IdMeal")
-                        .HasColumnType("int");
-
                     b.Property<int>("IdUser")
                         .HasColumnType("int");
 
-                    b.Property<int>("NumMeals")
+                    b.Property<string>("Place")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("IdOrder");
 
-                    b.HasIndex("IdMeal");
-
                     b.HasIndex("IdUser");
 
                     b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("Domain.Entities.OrderItem", b =>
+                {
+                    b.Property<int>("IdOrderItem")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdOrderItem"), 1L, 1);
+
+                    b.Property<int>("IdMeal")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdOrder")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdOrderItem");
+
+                    b.HasIndex("IdMeal");
+
+                    b.HasIndex("IdOrder");
+
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("Domain.Entities.Quote", b =>
@@ -190,26 +218,47 @@ namespace DeliciasAPI.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("IdMeal")
-                        .HasColumnType("int");
-
                     b.Property<int>("IdUser")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NumMeals")
                         .HasColumnType("int");
 
                     b.Property<string>("Place")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("IdQuote");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
-                    b.HasIndex("IdMeal");
+                    b.HasKey("IdQuote");
 
                     b.HasIndex("IdUser");
 
                     b.ToTable("Quotes");
+                });
+
+            modelBuilder.Entity("Domain.Entities.QuoteItem", b =>
+                {
+                    b.Property<int>("IdQuoteItem")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdQuoteItem"), 1L, 1);
+
+                    b.Property<int>("IdMeal")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdQuote")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdQuoteItem");
+
+                    b.HasIndex("IdMeal");
+
+                    b.HasIndex("IdQuote");
+
+                    b.ToTable("QuoteItems");
                 });
 
             modelBuilder.Entity("Domain.Entities.Role", b =>
@@ -227,6 +276,23 @@ namespace DeliciasAPI.Migrations
                     b.HasKey("IdRole");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            IdRole = 1,
+                            NameRole = "SuperAdmin"
+                        },
+                        new
+                        {
+                            IdRole = 2,
+                            NameRole = "Admin"
+                        },
+                        new
+                        {
+                            IdRole = 3,
+                            NameRole = "User"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
@@ -240,6 +306,9 @@ namespace DeliciasAPI.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("IdRole")
+                        .HasColumnType("int");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -263,6 +332,8 @@ namespace DeliciasAPI.Migrations
 
                     b.HasKey("IdUser");
 
+                    b.HasIndex("IdRole");
+
                     b.ToTable("Users");
 
                     b.HasData(
@@ -270,6 +341,7 @@ namespace DeliciasAPI.Migrations
                         {
                             IdUser = 1,
                             Email = "jair@gmail.com",
+                            IdRole = 1,
                             LastName = "Badillo",
                             Name = "Jair",
                             Password = "123456",
@@ -302,24 +374,16 @@ namespace DeliciasAPI.Migrations
 
             modelBuilder.Entity("Domain.Entities.Order", b =>
                 {
-                    b.HasOne("Domain.Entities.Meal", "Meal")
-                        .WithMany()
-                        .HasForeignKey("IdMeal")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Domain.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("IdUser")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Meal");
-
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Quote", b =>
+            modelBuilder.Entity("Domain.Entities.OrderItem", b =>
                 {
                     b.HasOne("Domain.Entities.Meal", "Meal")
                         .WithMany()
@@ -327,15 +391,66 @@ namespace DeliciasAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Domain.Entities.Order", "Order")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("IdOrder")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Meal");
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Quote", b =>
+                {
                     b.HasOne("Domain.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("IdUser")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Entities.QuoteItem", b =>
+                {
+                    b.HasOne("Domain.Entities.Meal", "Meal")
+                        .WithMany()
+                        .HasForeignKey("IdMeal")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Quote", "Quote")
+                        .WithMany("QuoteItems")
+                        .HasForeignKey("IdQuote")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Meal");
 
-                    b.Navigation("User");
+                    b.Navigation("Quote");
+                });
+
+            modelBuilder.Entity("Domain.Entities.User", b =>
+                {
+                    b.HasOne("Domain.Entities.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("IdRole")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Order", b =>
+                {
+                    b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Quote", b =>
+                {
+                    b.Navigation("QuoteItems");
                 });
 #pragma warning restore 612, 618
         }

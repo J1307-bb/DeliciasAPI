@@ -56,6 +56,7 @@ namespace DeliciasAPI.Services
                     Password = request.Password,
                     PhoneNumber = request.PhoneNumber,
                     UrlPP = request.UrlPP,
+                    IdRole = request.IdRole
                 };
 
                 _context.Users.Add(usuario);
@@ -85,6 +86,7 @@ namespace DeliciasAPI.Services
                     us.Password = usuario.Password;
                     us.PhoneNumber = usuario.PhoneNumber;
                     us.UrlPP = usuario.UrlPP;
+                    us.IdRole = usuario.IdRole;
                     _context.SaveChanges();
                 }
 
@@ -96,6 +98,7 @@ namespace DeliciasAPI.Services
                     Password = usuario.Password,
                     PhoneNumber = usuario.PhoneNumber,
                     UrlPP = usuario.UrlPP,
+                    IdRole = usuario.IdRole,
                 };
 
                 _context.Users.Update(us);

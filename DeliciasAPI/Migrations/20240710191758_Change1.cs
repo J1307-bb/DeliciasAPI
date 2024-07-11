@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DeliciasAPI.Migrations
 {
-    public partial class Somee : Migration
+    public partial class Change1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -49,24 +49,6 @@ namespace DeliciasAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.IdRole);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    IdUser = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UrlPP = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.IdUser);
                 });
 
             migrationBuilder.CreateTable(
@@ -118,26 +100,46 @@ namespace DeliciasAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    IdUser = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UrlPP = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IdRole = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.IdUser);
+                    table.ForeignKey(
+                        name: "FK_Users_Roles_IdRole",
+                        column: x => x.IdRole,
+                        principalTable: "Roles",
+                        principalColumn: "IdRole",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Orders",
                 columns: table => new
                 {
                     IdOrder = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NumMeals = table.Column<int>(type: "int", nullable: false),
                     IdUser = table.Column<int>(type: "int", nullable: false),
+                    Place = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Hour = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IdMeal = table.Column<int>(type: "int", nullable: false)
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Orders", x => x.IdOrder);
-                    table.ForeignKey(
-                        name: "FK_Orders_Meals_IdMeal",
-                        column: x => x.IdMeal,
-                        principalTable: "Meals",
-                        principalColumn: "IdMeal",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Orders_Users_IdUser",
                         column: x => x.IdUser,
@@ -153,20 +155,13 @@ namespace DeliciasAPI.Migrations
                     IdQuote = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Place = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NumMeals = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IdUser = table.Column<int>(type: "int", nullable: false),
-                    IdMeal = table.Column<int>(type: "int", nullable: false)
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Quotes", x => x.IdQuote);
-                    table.ForeignKey(
-                        name: "FK_Quotes_Meals_IdMeal",
-                        column: x => x.IdMeal,
-                        principalTable: "Meals",
-                        principalColumn: "IdMeal",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Quotes_Users_IdUser",
                         column: x => x.IdUser,
@@ -175,10 +170,79 @@ namespace DeliciasAPI.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "OrderItems",
+                columns: table => new
+                {
+                    IdOrderItem = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdOrder = table.Column<int>(type: "int", nullable: false),
+                    IdMeal = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderItems", x => x.IdOrderItem);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Meals_IdMeal",
+                        column: x => x.IdMeal,
+                        principalTable: "Meals",
+                        principalColumn: "IdMeal",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Orders_IdOrder",
+                        column: x => x.IdOrder,
+                        principalTable: "Orders",
+                        principalColumn: "IdOrder",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QuoteItems",
+                columns: table => new
+                {
+                    IdQuoteItem = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdQuote = table.Column<int>(type: "int", nullable: false),
+                    IdMeal = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QuoteItems", x => x.IdQuoteItem);
+                    table.ForeignKey(
+                        name: "FK_QuoteItems_Meals_IdMeal",
+                        column: x => x.IdMeal,
+                        principalTable: "Meals",
+                        principalColumn: "IdMeal",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_QuoteItems_Quotes_IdQuote",
+                        column: x => x.IdQuote,
+                        principalTable: "Quotes",
+                        principalColumn: "IdQuote",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "IdRole", "NameRole" },
+                values: new object[] { 1, "SuperAdmin" });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "IdRole", "NameRole" },
+                values: new object[] { 2, "Admin" });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "IdRole", "NameRole" },
+                values: new object[] { 3, "User" });
+
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "IdUser", "Email", "LastName", "Name", "Password", "PhoneNumber", "UrlPP" },
-                values: new object[] { 1, "jair@gmail.com", "Badillo", "Jair", "123456", "1234567890", "imagen.jpg" });
+                columns: new[] { "IdUser", "Email", "IdRole", "LastName", "Name", "Password", "PhoneNumber", "UrlPP" },
+                values: new object[] { 1, "jair@gmail.com", 1, "Badillo", "Jair", "123456", "1234567890", "imagen.jpg" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Admins_IdRole",
@@ -191,9 +255,14 @@ namespace DeliciasAPI.Migrations
                 column: "IdCategory");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_IdMeal",
-                table: "Orders",
+                name: "IX_OrderItems_IdMeal",
+                table: "OrderItems",
                 column: "IdMeal");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_IdOrder",
+                table: "OrderItems",
+                column: "IdOrder");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_IdUser",
@@ -201,14 +270,24 @@ namespace DeliciasAPI.Migrations
                 column: "IdUser");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Quotes_IdMeal",
-                table: "Quotes",
+                name: "IX_QuoteItems_IdMeal",
+                table: "QuoteItems",
                 column: "IdMeal");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QuoteItems_IdQuote",
+                table: "QuoteItems",
+                column: "IdQuote");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Quotes_IdUser",
                 table: "Quotes",
                 column: "IdUser");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_IdRole",
+                table: "Users",
+                column: "IdRole");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -220,22 +299,28 @@ namespace DeliciasAPI.Migrations
                 name: "Contacts");
 
             migrationBuilder.DropTable(
+                name: "OrderItems");
+
+            migrationBuilder.DropTable(
+                name: "QuoteItems");
+
+            migrationBuilder.DropTable(
                 name: "Orders");
-
-            migrationBuilder.DropTable(
-                name: "Quotes");
-
-            migrationBuilder.DropTable(
-                name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "Meals");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Quotes");
 
             migrationBuilder.DropTable(
                 name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
         }
     }
 }

@@ -14,5 +14,6 @@ namespace Domain.DTO
         public string Password { get; set; }
         public string PhoneNumber { get; set; }
         public string UrlPP { get; set; }
+        public int IdRole { get; set; }
     }
 }

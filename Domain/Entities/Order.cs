@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.DTO;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,17 +13,15 @@ namespace Domain.Entities
     {
         [Key]
         public int IdOrder { get; set; }
-        public int NumMeals { get; set; }
 
         [ForeignKey("User")]
         public int IdUser { get; set; }
         public User User { get; set; }
-
+        public string Place { get; set; }
         public DateTime Date { get; set; }
         public string Hour { get; set; }
-
-        [ForeignKey("Meal")]
-        public int IdMeal { get; set; }
-        public Meal Meal { get; set; }
+        public int Status { get; set; }
+        public double Price { get; set; }
+        public List<OrderItem> OrderItems { get; set; }
     }
 }

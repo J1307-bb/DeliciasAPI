@@ -20,7 +20,7 @@ namespace DeliciasAPI.Services
         {
             try
             {
-                List<Quote> response = await _context.Quotes.Include(x => x.User).Include(x => x.Meal).ToListAsync();
+                List<Quote> response = await _context.Quotes.Include(x => x.User).ToListAsync();
                 return new Response<List<Quote>>(response);
             }
             catch (Exception ex)
@@ -51,10 +51,14 @@ namespace DeliciasAPI.Services
                 Quote quote = new Quote()
                 {
                     Place = request.Place,
-                    NumMeals = request.NumMeals,
                     Date = request.Date,
                     IdUser = request.IdUser,
-                    IdMeal = request.IdMeal,
+                    Status = request.Status,
+                    QuoteItems = request.QuoteItems.Select(x => new QuoteItem()
+                    {
+                        IdMeal = x.IdMeal,
+                        Quantity = x.Quantity
+                    }).ToList()
                 };
 
                 _context.Quotes.Add(quote);
@@ -80,19 +84,27 @@ namespace DeliciasAPI.Services
                 {
                     quo.Date = quote.Date;
                     quo.Place = quote.Place;
-                    quo.NumMeals = quote.NumMeals;
-                    quo.IdMeal = quote.IdMeal;
+                    quo.Status = quote.Status;
                     quo.IdUser = quote.IdUser;
+                    quo.QuoteItems = quote.QuoteItems.Select(x => new QuoteItem()
+                    {
+                        IdMeal = x.IdMeal,
+                        Quantity = x.Quantity
+                    }).ToList();
                     _context.SaveChanges();
                 }
 
                 Quote newQuote = new Quote()
                 {
                     Place= quote.Place,
-                    NumMeals = quote.NumMeals,  
                     Date = quote.Date,
                     IdUser = quote.IdUser,
-                    IdMeal = quote.IdMeal,
+                    Status = quote.Status,
+                    QuoteItems = quote.QuoteItems.Select(x => new QuoteItem()
+                    {
+                        IdMeal = x.IdMeal,
+                        Quantity = x.Quantity
+                    }).ToList()
                 };
 
                 _context.Quotes.Update(quo);

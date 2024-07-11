@@ -8,12 +8,21 @@ using System.Threading.Tasks;
 
 namespace Domain.DTO
 {
+
     public class OrderResponse
     {
-        public int NumMeals { get; set; }
+        public string Place { get; set; }
         public DateTime Date { get; set; }
         public string Hour { get; set; }
         public int IdUser { get; set; }
+        public int Status { get; set; }
+        public double Price { get; set; }
+        public List<OrderItemResponse> OrderItems { get; set; }
+    }
+
+    public class OrderItemResponse
+    {
         public int IdMeal { get; set; }
+        public int Quantity { get; set; }
     }
 }
