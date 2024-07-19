@@ -9,10 +9,12 @@ namespace DeliciasAPI.Services
     public class QuotesService : IQuotesService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMailService _mailService;
 
-        public QuotesService(ApplicationDbContext context)
+        public QuotesService(ApplicationDbContext context, IMailService mailService)
         {
             _context = context;
+            _mailService = mailService;
         }
 
         // Lista de Quotes
@@ -71,6 +73,94 @@ namespace DeliciasAPI.Services
 
                 _context.Quotes.Add(quote);
                 await _context.SaveChangesAsync();
+
+                try
+                {
+                    //Buscar el usuario que solicito la cotización
+                    User user = await _context.Users.FirstOrDefaultAsync(x => x.IdUser == request.IdUser);
+                    if (user != null) {
+
+                        string htmlContent = @"
+                            <!DOCTYPE html>
+                            <html lang='en'>
+                            <head>
+                                <meta charset='UTF-8'>
+                                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                                <title>Agradecimiento por Cotización</title>
+                                <style>
+                                    body {
+                                        font-family: Arial, sans-serif;
+                                        background-color: #f4f4f4;
+                                        margin: 0;
+                                        padding: 0;
+                                    }
+                                    .container {
+                                        width: 100%;
+                                        max-width: 600px;
+                                        margin: 0 auto;
+                                        background-color: #ffffff;
+                                        padding: 20px;
+                                        border-radius: 8px;
+                                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                                    }
+                                    .header {
+                                        text-align: center;
+                                        padding: 10px 0;
+                                    }
+                                    .header img {
+                                        max-width: 100px;
+                                    }
+                                    .content {
+                                        margin: 20px 0;
+                                        line-height: 1.6;
+                                    }
+                                    .content h1 {
+                                        color: #333333;
+                                    }
+                                    .content p {
+                                        color: #555555;
+                                    }
+                                    .footer {
+                                        text-align: center;
+                                        margin: 20px 0;
+                                        color: #777777;
+                                        font-size: 12px;
+                                    }
+                                </style>
+                            </head>
+                            <body>
+                                <div class='container'>
+                                    <div class='header'>
+                                        <img src='cid:logo' alt='Delicias Logo'>
+                                    </div>
+                                    <div class='content'>
+                                        <h1>¡Gracias por tu Cotización!</h1>
+                                        <p>Hola " + user.Name + ' ' + user.LastName + @",</p>
+                                        <p>Gracias por realizar una cotización con Delicias. Hemos recibido tu solicitud y nuestro equipo está trabajando en ella.</p>
+                                        <p>Muy pronto te enviaremos una respuesta con todos los detalles de tu cotización.</p>
+                                        <p>Si tienes alguna pregunta o necesitas asistencia adicional, no dudes en contactarnos.</p>
+                                        <p>Gracias por confiar en nosotros.</p>
+                                        <p>Saludos cordiales,</p>
+                                        <p>El equipo de Delicias</p>
+                                    </div>
+                                    <div class='footer'>
+                                        <p>&copy; 2024 Delicias. Todos los derechos reservados.</p>
+                                    </div>
+                                </div>
+                            </body>
+                            </html>";
+
+                        string logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/DeliciasLogo.svg");
+
+                        //Enviar correo al usuario
+                        _mailService.SendMail(user.Email, "Cotización 📈", htmlContent, logoPath);
+                    }
+
+                }
+                catch(Exception ex)
+                {
+                    throw new Exception("Ocurrio un error al enviar el correo" + ex.Message);
+                }
 
                 // Preparar la respuesta
                 QuoteResponse response = new QuoteResponse

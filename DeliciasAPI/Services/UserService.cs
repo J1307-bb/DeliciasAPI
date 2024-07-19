@@ -116,10 +116,10 @@ namespace DeliciasAPI.Services
                     <body>
                         <div class='container'>
                             <div class='header'>
-                                <img src='cid:logo' alt='Delicias Logo'>
+                                <img src='[LOGO]' alt='Delicias Logo'>
                             </div>
                             <div class='content'>
-                                <h1>¡Bienvenido a Delicias!</h1>
+                                <h1>¡Gracias por registrarte en Delicias!</h1>
                                 <p>Hola " + usuario.Name + ' ' + usuario.LastName + @",</p>
                                 <p>Gracias por registrarte en Delicias. Estamos encantados de tenerte con nosotros.</p>
                                 <p>En Delicias, nos esforzamos por ofrecerte los mejores platillos y una experiencia inigualable.</p>
@@ -136,8 +136,8 @@ namespace DeliciasAPI.Services
                     </html>"
                 ;
 
-                string logoPath = Path.Combine(Directory.GetCurrentDirectory(), "DeliciasAPI\\wwwroot\\images\\DeliciasLogo.svg");
-                _mailService.SendMail(usuario.Email, "Bienvenido a Delicias.com", body, logoPath);
+                string logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/DeliciasLogo.svg");
+                _mailService.SendMail(usuario.Email, "¡Bienvenido(a) a Delicias!😋", body, logoPath);
 
                 return new Response<User>(usuario);
             }
