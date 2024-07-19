@@ -20,8 +20,13 @@ namespace DeliciasAPI.Services
         {
             try
             {
-                List<Quote> response = await _context.Quotes.Include(x => x.User).Include(x => x.Meal).ToListAsync();
-                return new Response<List<Quote>>(response);
+                List<Quote> quotes = await _context.Quotes
+                .Include(q => q.User)
+                .Include(q => q.QuoteItems)
+                    .ThenInclude(qi => qi.Meal)
+                .ToListAsync();
+
+                return new Response<List<Quote>>(quotes);
             }
             catch (Exception ex)
             {
@@ -48,17 +53,39 @@ namespace DeliciasAPI.Services
         {
             try
             {
+                // Crear la cotización
                 Quote quote = new Quote()
                 {
                     Place = request.Place,
                     NumMeals = request.NumMeals,
                     Date = request.Date,
                     IdUser = request.IdUser,
-                    IdMeal = request.IdMeal,
+                    Status = request.Status,
+                    TotalPrice = request.TotalPrice,
+                    QuoteItems = request.QuoteItems.Select(qi => new QuoteItem
+                    {
+                        IdMeal = qi.IdMeal,
+                        Quantity = qi.Quantity
+                    }).ToList()
                 };
 
                 _context.Quotes.Add(quote);
                 await _context.SaveChangesAsync();
+
+                // Preparar la respuesta
+                QuoteResponse response = new QuoteResponse
+                {
+                    Place = quote.Place,
+                    NumMeals = quote.NumMeals,
+                    Date = quote.Date,
+                    IdUser = quote.IdUser,
+                    TotalPrice = quote.TotalPrice,
+                    QuoteItems = quote.QuoteItems.Select(qi => new QuoteItemResponse
+                    {
+                        IdMeal = qi.IdMeal,
+                        Quantity = qi.Quantity
+                    }).ToList()
+                };
 
                 return new Response<Quote>(quote);
             }
@@ -74,31 +101,52 @@ namespace DeliciasAPI.Services
         {
             try
             {
-                Quote quo = await _context.Quotes.FirstOrDefaultAsync(x => x.IdQuote == id);
+                Quote quo = await _context.Quotes
+                     .Include(q => q.QuoteItems)
+                     .FirstOrDefaultAsync(x => x.IdQuote == id);
 
-                if (quo != null)
+                if (quo == null)
                 {
-                    quo.Date = quote.Date;
-                    quo.Place = quote.Place;
-                    quo.NumMeals = quote.NumMeals;
-                    quo.IdMeal = quote.IdMeal;
-                    quo.IdUser = quote.IdUser;
-                    _context.SaveChanges();
+                    return new Response<Quote>("Quote not found.");
                 }
 
-                Quote newQuote = new Quote()
+                quo.Date = quote.Date;
+                quo.Place = quote.Place;
+                quo.NumMeals = quote.NumMeals;
+                quo.IdUser = quote.IdUser;
+                quo.TotalPrice = quote.TotalPrice;
+                quo.Status = quote.Status;
+
+                // Actualizar los QuoteItems
+                quo.QuoteItems.Clear();
+                foreach (var item in quote.QuoteItems)
                 {
-                    Place= quote.Place,
-                    NumMeals = quote.NumMeals,  
-                    Date = quote.Date,
-                    IdUser = quote.IdUser,
-                    IdMeal = quote.IdMeal,
-                };
+                    quo.QuoteItems.Add(new QuoteItem
+                    {
+                        IdMeal = item.IdMeal,
+                        Quantity = item.Quantity
+                    });
+                }
 
                 _context.Quotes.Update(quo);
                 await _context.SaveChangesAsync();
 
-                return new Response<Quote>(newQuote);
+                // Preparar la respuesta
+                Quote response = new Quote
+                {
+                    Place = quo.Place,
+                    NumMeals = quo.NumMeals,
+                    Date = quo.Date,
+                    IdUser = quo.IdUser,
+                    TotalPrice = quo.TotalPrice,
+                    QuoteItems = quo.QuoteItems.Select(qi => new QuoteItem
+                    {
+                        IdMeal = qi.IdMeal,
+                        Quantity = qi.Quantity
+                    }).ToList()
+                };
+
+                return new Response<Quote>(response);
             }
             catch (Exception ex)
             {

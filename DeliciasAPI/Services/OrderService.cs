@@ -20,8 +20,13 @@ namespace DeliciasAPI.Services
         {
             try
             {
-                List<Order> response = await _context.Orders.Include(x => x.Meal).Include(x=> x.User).ToListAsync();
-                return new Response<List<Order>>(response);
+                List<Order> orders = await _context.Orders
+                .Include(q => q.User)
+                .Include(q => q.OrderItems)
+                    .ThenInclude(qi => qi.Meal)
+                .ToListAsync();
+
+                return new Response<List<Order>>(orders);
             }
             catch (Exception ex)
             {
@@ -50,15 +55,23 @@ namespace DeliciasAPI.Services
             {
                 Order order = new Order()
                 {
+                    Place = request.Place,
                     NumMeals = request.NumMeals,
-                    IdUser = request.IdUser,
-                    IdMeal = request.IdMeal,
                     Date = request.Date,
                     Hour = request.Hour,
+                    IdUser = request.IdUser,
+                    Status = request.Status,
+                    TotalPrice = request.TotalPrice,
+                    OrderItems = request.OrderItems.Select(qi => new OrderItem
+                    {
+                        IdMeal = qi.IdMeal,
+                        Quantity = qi.Quantity
+                    }).ToList()
                 };
 
                 _context.Orders.Add(order);
                 await _context.SaveChangesAsync();
+
 
                 return new Response<Order>(order);
             }
@@ -74,31 +87,40 @@ namespace DeliciasAPI.Services
         {
             try
             {
-                Order ord = await _context.Orders.FirstOrDefaultAsync(x => x.IdOrder == id);
 
-                if (ord != null)
+                Order ord = await _context.Orders
+                     .Include(q => q.OrderItems)
+                     .FirstOrDefaultAsync(x => x.IdOrder == id);
+
+                if (ord == null)
                 {
-                    ord.NumMeals = order.NumMeals;
-                    ord.IdUser = order.IdUser;
-                    ord.Date = order.Date;
-                    ord.Hour = order.Hour;
-                    ord.IdMeal = order.IdMeal;
-                    _context.SaveChanges();
+                    return new Response<Order>("Order not found.");
                 }
 
-                Order newOrder = new Order()
+                ord.Place = order.Place;
+                ord.NumMeals = order.NumMeals;
+                ord.Status = order.Status;
+                ord.Date = order.Date;
+                ord.Hour = order.Hour;
+                ord.IdUser = order.IdUser;
+                ord.TotalPrice = order.TotalPrice;
+
+                // Actualizar los QuoteItems
+                ord.OrderItems.Clear();
+                foreach (var item in order.OrderItems)
                 {
-                    NumMeals = order.NumMeals,
-                    IdUser = order.IdUser,
-                    IdMeal = order.IdMeal,
-                    Date = order.Date,
-                    Hour = order.Hour,
-                };
+                    ord.OrderItems.Add(new OrderItem
+                    {
+                        IdMeal = item.IdMeal,
+                        Quantity = item.Quantity
+                    });
+                }
 
                 _context.Orders.Update(ord);
                 await _context.SaveChangesAsync();
 
-                return new Response<Order>(newOrder);
+                return new Response<Order>(ord);
+
             }
             catch (Exception ex)
             {

@@ -8,6 +8,16 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
+    public class QuoteItem
+    {
+        [Key]
+        public int IdQuoteItem { get; set; }
+        [ForeignKey("Meal")]
+        public int IdMeal { get; set; }
+        public Meal Meal { get; set; }
+        public int Quantity { get; set; }
+    }
+
     public class Quote
     {
         [Key]
@@ -15,13 +25,12 @@ namespace Domain.Entities
         public string Place { get; set; }
         public int NumMeals { get; set; }
         public DateTime Date { get; set; }
+        public int Status { get; set; }
+        public double TotalPrice { get; set; }
 
         [ForeignKey("User")]
         public int IdUser { get; set; }
         public User User { get; set; }
-
-        [ForeignKey("Meal")]
-        public int IdMeal { get; set; }
-        public Meal Meal { get; set; }
+        public List<QuoteItem> QuoteItems { get; set; }
     }
 }

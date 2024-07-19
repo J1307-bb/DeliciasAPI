@@ -32,7 +32,31 @@ namespace DeliciasAPI.Context
                     Password = "123456",
                     Email = "jair@gmail.com",
                     PhoneNumber = "1234567890",
-                    UrlPP = "imagen.jpg"
+                    UrlPP = "imagen.jpg",
+                    IdRole = 1
+                }
+            );
+
+            modelBuilder.Entity<Role>().HasData(
+                new Role()
+                {
+                    IdRole = 1,
+                    NameRole = "SuperAdmin"
+                },
+                new Role()
+                {
+                    IdRole = 2,
+                    NameRole = "Admin"
+                },
+                new Role()
+                {
+                    IdRole = 3,
+                    NameRole = "Colaborador"
+                },
+                new Role()
+                {
+                    IdRole = 4,
+                    NameRole = "User"
                 }
             );
 

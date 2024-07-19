@@ -7,7 +7,6 @@ namespace DeliciasAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize]
     public class UserController : ControllerBase
     {
         public readonly IUserService _userService;

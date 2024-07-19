@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeliciasAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240703201423_Somee")]
-    partial class Somee
+    [Migration("20240717172605_Quotes1")]
+    partial class Quotes1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -190,9 +190,6 @@ namespace DeliciasAPI.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("IdMeal")
-                        .HasColumnType("int");
-
                     b.Property<int>("IdUser")
                         .HasColumnType("int");
 
@@ -203,13 +200,40 @@ namespace DeliciasAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("IdQuote");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
-                    b.HasIndex("IdMeal");
+                    b.HasKey("IdQuote");
 
                     b.HasIndex("IdUser");
 
                     b.ToTable("Quotes");
+                });
+
+            modelBuilder.Entity("Domain.Entities.QuoteItem", b =>
+                {
+                    b.Property<int>("IdQuoteItem")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdQuoteItem"), 1L, 1);
+
+                    b.Property<int>("IdMeal")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("QuoteIdQuote")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdQuoteItem");
+
+                    b.HasIndex("IdMeal");
+
+                    b.HasIndex("QuoteIdQuote");
+
+                    b.ToTable("QuoteItem");
                 });
 
             modelBuilder.Entity("Domain.Entities.Role", b =>
@@ -227,6 +251,28 @@ namespace DeliciasAPI.Migrations
                     b.HasKey("IdRole");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            IdRole = 1,
+                            NameRole = "SuperAdmin"
+                        },
+                        new
+                        {
+                            IdRole = 2,
+                            NameRole = "Admin"
+                        },
+                        new
+                        {
+                            IdRole = 3,
+                            NameRole = "Colaborador"
+                        },
+                        new
+                        {
+                            IdRole = 4,
+                            NameRole = "User"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
@@ -240,6 +286,9 @@ namespace DeliciasAPI.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("IdRole")
+                        .HasColumnType("int");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -263,6 +312,8 @@ namespace DeliciasAPI.Migrations
 
                     b.HasKey("IdUser");
 
+                    b.HasIndex("IdRole");
+
                     b.ToTable("Users");
 
                     b.HasData(
@@ -270,6 +321,7 @@ namespace DeliciasAPI.Migrations
                         {
                             IdUser = 1,
                             Email = "jair@gmail.com",
+                            IdRole = 1,
                             LastName = "Badillo",
                             Name = "Jair",
                             Password = "123456",
@@ -321,21 +373,44 @@ namespace DeliciasAPI.Migrations
 
             modelBuilder.Entity("Domain.Entities.Quote", b =>
                 {
-                    b.HasOne("Domain.Entities.Meal", "Meal")
-                        .WithMany()
-                        .HasForeignKey("IdMeal")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Domain.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("IdUser")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Meal");
-
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Entities.QuoteItem", b =>
+                {
+                    b.HasOne("Domain.Entities.Meal", "Meal")
+                        .WithMany()
+                        .HasForeignKey("IdMeal")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Quote", null)
+                        .WithMany("QuoteItems")
+                        .HasForeignKey("QuoteIdQuote");
+
+                    b.Navigation("Meal");
+                });
+
+            modelBuilder.Entity("Domain.Entities.User", b =>
+                {
+                    b.HasOne("Domain.Entities.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("IdRole")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Quote", b =>
+                {
+                    b.Navigation("QuoteItems");
                 });
 #pragma warning restore 612, 618
         }
