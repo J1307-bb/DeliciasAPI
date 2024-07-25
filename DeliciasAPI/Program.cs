@@ -52,6 +52,7 @@ builder.Services.AddTransient<IAdminService, AdminService>();
 builder.Services.AddTransient<IRoleService, RoleService>();
 builder.Services.AddTransient<ILoginService, LoginService>();
 builder.Services.AddTransient<IMailService, MailService>();
+builder.Services.AddTransient<PreferenceService>();
 
 //Agregar el corsPolicy
 builder.Services.AddCors(policyBulder =>

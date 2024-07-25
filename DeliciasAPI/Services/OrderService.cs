@@ -3,6 +3,7 @@ using DeliciasAPI.Interfaces;
 using Domain.DTO;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Any;
 
 namespace DeliciasAPI.Services
 {
@@ -138,7 +139,7 @@ namespace DeliciasAPI.Services
                 {
                     _context.Orders.Remove(ord);
                     await _context.SaveChangesAsync();
-                    return new Response<Order>("Usuario eliminado:" + ord.IdOrder.ToString());
+                    return new Response<Order>("Orden eliminado:" + ord.IdOrder.ToString());
                 }
 
                 return new Response<Order>("Order no encontrado: " + id);

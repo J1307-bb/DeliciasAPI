@@ -2,6 +2,8 @@
 using System.Net.Mail;
 using System.Net;
 using DeliciasAPI.Interfaces;
+using Domain.Entities;
+using System.Text;
 
 namespace DeliciasAPI.Services
 {
@@ -14,7 +16,7 @@ namespace DeliciasAPI.Services
             _context = context;
         }
 
-        public void SendMail(string to, string subject, string body, string logoPath = null)
+        public void SendMail(string to, string subject, string body)
         {
             SmtpClient smtp = new SmtpClient("smtp-mail.outlook.com", 587);
             smtp.Credentials = new NetworkCredential("delicias.webapp@outlook.com", "Delicias2024");
@@ -29,25 +31,6 @@ namespace DeliciasAPI.Services
             mail.Body = body;
             mail.IsBodyHtml = true;
             mail.Body = body;
-
-            if (logoPath != null && File.Exists(logoPath))
-            {
-                LinkedResource inlineLogo = new LinkedResource(logoPath)
-                {
-                    ContentId = "logo",
-                    TransferEncoding = System.Net.Mime.TransferEncoding.Base64
-                };
-
-                string htmlBody = body.Replace("[LOGO]", "cid:logo");
-                AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, System.Net.Mime.MediaTypeNames.Text.Html);
-                alternateView.LinkedResources.Add(inlineLogo);
-                mail.AlternateViews.Add(alternateView);
-            }
-            else
-            {
-                mail.Body = body;
-            }
-
 
             smtp.Send(mail);
         }

@@ -21,7 +21,6 @@ namespace Domain.DTO
         public string Hour { get; set; }
         public string Place { get; set; }
         public int IdUser { get; set; }
-        public int IdMeal { get; set; }
         public int Status { get; set; }
         public double TotalPrice { get; set; }  
         public List<OrderItemResponse> OrderItems { get; set; }
