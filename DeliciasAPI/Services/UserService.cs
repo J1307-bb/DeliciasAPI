@@ -168,6 +168,7 @@ namespace DeliciasAPI.Services
 
                 User newUsuario = new User()
                 {
+                    IdUser = us.IdUser,
                     Name = usuario.Name,
                     LastName = usuario.LastName,
                     Email = usuario.Email,
