@@ -18,6 +18,7 @@ namespace DeliciasAPI.Context
         public DbSet<Category> Categories { get; set; }
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<Terms> Terms { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

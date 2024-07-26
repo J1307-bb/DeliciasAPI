@@ -247,7 +247,9 @@ namespace DeliciasAPI.Services
         {
             try
             {
-                Quote quote = await _context.Quotes.FirstOrDefaultAsync(x => x.IdQuote == id);
+                Quote quote = await _context.Quotes
+                    .Include(q => q.QuoteItems)
+                    .FirstOrDefaultAsync(x => x.IdQuote == id);
                 if (quote != null)
                 {
                     _context.Quotes.Remove(quote);

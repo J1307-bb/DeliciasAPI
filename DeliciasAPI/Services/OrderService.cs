@@ -134,7 +134,9 @@ namespace DeliciasAPI.Services
         {
             try
             {
-                Order ord = await _context.Orders.FirstOrDefaultAsync(x => x.IdOrder == id);
+                Order ord = await _context.Orders
+                    .Include(q => q.OrderItems)
+                    .FirstOrDefaultAsync(x => x.IdOrder == id);
                 if (ord != null)
                 {
                     _context.Orders.Remove(ord);
